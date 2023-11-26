@@ -1,14 +1,5 @@
-FROM ubuntu:20.10
+FROM ubuntu:14.10
 
-RUN apt-get update && \
+RUN sed -i 's/^deb http:\/\/.*ubuntu\.com\/ubuntu/ deb http:\/\/old-releases.ubuntu.com\/ubuntu/' /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y openssh-server openssh-client
-
-RUN mkdir /var/run/sshd
-RUN echo 'test:test' | chpasswd
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#ChallengeResponseAuthentication no/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-
-EXPOSE 22
-
-CMD ["/usr/sbin/sshd", "-D"]
